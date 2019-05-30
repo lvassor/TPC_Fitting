@@ -1,0 +1,194 @@
+\documentclass[11pt]{article}
+\usepackage[margin=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{lineno}
+\usepackage{setspace}
+\usepackage{apacite}
+\usepackage{gensymb}
+\usepackage{amssymb}
+\usepackage{wrapfig}
+\doublespacing
+
+% \graphicspath{{../Write-Up/Images/Imperial_College_London_crest.svg}}
+\title{\textbf{An investigation into the versatility of mechanistic and phenomenological models in describing Thermal Performance Curves.}}
+\author{Luke Vassor \\ CID: 01607235}
+\date{}
+\begin{document}
+    \maketitle    
+    \begin{center}
+        \textbf{Department of Life Sciences \\
+                Imperial College London \\
+                London SW7 2AZ \\
+                United Kingdom \\}
+        \vspace{10mm}
+        \includegraphics[width=3in]{../Write-Up/Images/Imperial_College_London_crest.pdf} \\
+        \vspace{10mm}
+        A project report submitted in partial fulfilment of the requirements for the degree of Master of Science at Imperial College London \\
+        Submitted for the M.Sc. Computational Methods in Ecology \& Evolution
+    \end{center}
+    \newpage
+    \tableofcontents
+    \newpage
+    \section{Abstract}
+    \linenumbers
+        As global average temperatures continue to increase due to anthropogenic climate change, a scalable, first-principles understanding, through accurate models, of how organisms respond to temperature will be pivotal in predicting the effects of a changing climate on biological systems at all scales. Here I quantified the ability of 2 phenomenological and 1 mechanistic model to fit a diverse dataset of biological traits. A simple, polynomial model was found to fit the data best overall in this case, however several caveats of the data and approach are discussed in hope of being rectified through further study.
+        \\
+        Word Count: 3495
+    \section{Introduction}
+        \subsection{Background}
+        There is broad acceptance among the scientific community and wider society that climate change is having, and will continue to have, a negative impact on the natural environment. As astmospheric greenhouse gas concentrations continue to increase, so too will global warming, with consequences felt at all levels of biological organisation and scale: from the kinetics of biochemical pathways to whole-ecosystem nutrient cycling and the biosphere beyond. Understanding how biological and ecological rates at the individual, population and ecosystem level respond to temperature will be paramount in predicting how dynamics at these scales are effected by climate change \shortcite{brown2004toward,allen2002global, portner2006trade, dell2011systematic, hoffmann2011climate, pawar2015metabolic, kontopoulos2018use}. To understand how rates respond to environmental temperature, mechanistic mathematical models, rooted in biological theory, have been developed to describe empirically observed Thermal Performance Curves (TPCs) \shortcite{somero2002thermal,kontopoulos2018use}.
+        In a period of uncertainty with regard to the future, no more appropriate a time has there been for the field of Biology to migrate towards that of a theoretical one which develops such models \cite{michaletz2018evaluating}.
+        \\
+        The Metabolic Theory of Ecology aims to utilise mechanistic mathematical models as a first principles approach to link pattern, the ecology of whole populations and communities, to process, the biology of individual organisms. It does so through mathematical equations rooted in thermodynamics and collision theory, providing a mechanistic insight into the responses of biochemical/physiological/morphological/ecological rates to temperature \shortcite{brown2004toward, allen2002global, dell2011systematic, gillooly2001effects, gillooly2002effects, savage2004predominance, pawar2015metabolic, pawar2016real, kontopoulos2018use}. Arguably, mechanistic models are more accurate in describing data, because they are grounded in theory and their parameters have a biological meaning and range \cite{eskola2009mechanistic}. In this way, Metabolic Theory is exemplary in the current transition in ecology and evolution research, from the classic hypothesis testing paradigm to a competing models methodology \cite{johnson2004model}.
+        
+        \subsection{Models}
+        A trait is any quantifiable measurement of an organism, and it follows that a functional trait is any trait which impacts fitness directly or indirectly through effects on growth, reproduction and survival \shortcite{ViolleFunctionalTrait}. Many functional traits are biological rates, for instance metabolic rate, or growth rate. It is well documented that the majority of biological rates increase exponentially with temperature, up to some optimum, $T_{pk}$, followed by a sharp decline at temperatures above this optimum \shortcite{brown2004toward, white2005scaling}. This forms the characteristic shape of a Thermal Performance Curve (TPC herein): unimodal, left-skewed and asymmetric about $T_{pk}$. The initial ``trait rise'' \shortcite{dell2011systematic} up to $T_{pk}$  is described by the Boltzmann Factor of the Van't Hoff-Arrhenius equation \shortcite{boltzmann1872boltzmann, arrhenius1889reaktionsgeschwindigkeit}:
+        \begin{equation}
+            e^{-\frac{E}{kT}}
+        \end{equation}
+
+        Within the temperature range below $T_{pk}$, it has been proposed that the thermal response of most biological traits is well described mechanistically by the Boltzmann-Arrhenius model:
+        \begin{equation}
+            B = B_0e^{-\frac{E}{kT}}
+        \end{equation}
+
+        The sudden decrease in rate and drop in thermal performance at temperatures immediately above $T_{pk}$ is explained by the biochemical properties of the critical proteins (catalytic, rate-limiting enzymes) involved in these pathways \shortcite{kontopoulos2018use}. At $T_{pk}$, the kinetic energy of the system is at its maximum while the structural integrity of critical proteins is simultaneously retained, for example an enzyme active site. Beyond this point, extreme temperatures cause the protein to unfold and quickly denature, resulting in the breakdown of the pathway reliant on this protein, with consequences for the trait as a whole, hence the rapid ``trait fall'' \cite{dell2011systematic, brown2004toward}. 
+        A thermal response measured across a temperature range which includes this trait fall after the inflection at $T_{pk}$ is considered to be well described by the Sharpe-Schoolfield model \cite{schoolfield1981non}. The Sharpe-Schoolfield (SS) model quantifies the effect of temperature on a rate by parameterising the function of a single rate-limiting enzyme, which is deactivated at both low and high temperatures. \shortcite{schoolfield1981non,kontopoulos2018use}
+        \begin{equation}
+            B = \frac{B_{0}e^{-\frac{E}{k}(\frac{1}{T}-\frac{1}{283.15})}}{1 + e^{\frac{E_l}{k}(\frac{1}{Tl}-\frac{1}{T})} + e^{\frac{E_h}{k}(\frac{1}{T_h}-\frac{1}{T})}}
+        \end{equation}
+        
+        As explained by \cite{kontopoulos2018use}, low temperature inactivation is difficult to trace, as multiple low temperature rate measurements are required to calculate accurate parameter values, a resolution which is abscent from the majority of thermal performance datasets. It is, therefore, often more parsimonious to use a simplified version of the Sharpe-Schoolfield model \cite{alber1993new} which has removed the low-temperature enzyme inactivation term (SSH).
+        \begin{equation}
+            B = \frac{B_{0}e^{-\frac{E}{k}(\frac{1}{T}-\frac{1}{283.15})}}{1 + e^{\frac{E_h}{k}(\frac{1}{T_h}-\frac{1}{T})}}
+        \end{equation}
+        
+        It should be noted that while the majority of TPCs follow a general, unimodal shape, much variation exists between and within levels of organisations, and as such a complete mechanistic understanding of how temperature influences these curves is not yet in place \cite{schulte2015effects, delong2017combined}.
+        Precursive to the SS model, other functions had been proposed by \cite{sharpe1977reaction} which had parameters based on enzyme kinetics. However in this original form, thermodynamic parameters were highly correlated, and as such parameter estimation using nonlinear techniques was unfeasible. In hope of rectifying this, \cite{schoolfield1981non} reparameterised the \cite{sharpe1977reaction} model to permit these estimation techniques. Whilst successfully fitted to many datasets, the mathematical complexity of this, and other previous models \shortcite{logan1976analytic, sharpe1977reaction, schoolfield1981non} provided a rationale for \shortcite{briere1999novel}, to produce a simplified model of development which could still capture nonlinearity at upper and lower temperature limits (BRI):
+        \begin{equation}
+            B = B_{0}T(T - T_{0})\sqrt{T_{m} - T}
+        \end{equation}
+        Here, the square root term permits a high slope at high temperatures, allowing accurate description of a rapid trait fall above $T_{pk}$ \shortcite{briere1999novel}. Whilst this model describes nonlinearity at low and high temperature limits, it is essentially phenomenological, as the parameters are not mechanistically derived. However, an advantage of the Bri\'ere model is its ability to capture the decay of trait values to 0, which the Boltzmann-Arrhenius and Sharpe-Schoolfield are unable to do, since they are built around exponential terms taken to the power of the temperature, and thus trait values can only exponentially decay towards an asymptote.
+
+        Finally, the simplest model which can be used to describe biological trait rate data is a general cubic polynomial (CUB). Purely phenomenological in nature, the parameters $B_0$, $B_1$, $B_2$ and $B_3$ lack any mechanistic interpretation and are, therefore, unbounded.
+        \begin{equation}
+            B = B_{0} + B_{1}T + B_{2}T^2 + B_{3}T^3
+        \end{equation}
+        
+    \section{Methods \& Materials}
+        \subsection{Dataset}
+            The subject of this study was a large empirical dataset, namely the Global BioTraits Database \footnote{accessible at: https://biotraits.ucla.edu/}. This was compiled, organised and analysed by \cite{dell2011systematic} and, at the time of its publication, represented the largest and most trait-diverse database of thermal responses of biological traits yet published \cite{dell2011systematic}. As of March 2019, the database contained 533 species with 2165 unique TPCs. In this study, 1084 response curves were isolated for the fitting of three models.
+        \subsection{Data Wrangling}
+            Given the complexity and size of the BioTraits Database (25800+ rows), it houses a considerable amount of fields which may be unnecessary for any specific study. Here these data, NA values and duplicate rows were stripped to significantly reduce the memory required to load it and increase speeds in later processing. To maximise data available for model fitting, which is solely to the shape of the data, permitting vetical transformation, negative values were scaled positively, by adding $x_{min} + 1$ to all values ($+1$ since fitting involved log tansformations and $log(0) =$ undetermined.) Certain criteria were imposed on the data in order for them to be eligible for model fitting. Only curves with trait values measured across a minimum of 6 unique temperatures were permitted, since the SSH and Bri\'ere models contain 4 free parameters and 2 degrees of freedom are necessitated by non-linear least squares fitting.
+
+        \subsection{Model Parameters \& Model Fitting}
+            To increase the likelihood of model convergence, starting values were calculated for the SSH and Bri\'ere model parameters prior to minimizing. Where necessary, starting values were estimated via methods obtained, or values themselves, from the relevant literature. 
+            \subsubsection{SSH}
+                \begin{itemize}
+                    \item $k$ is the Boltzmann constant (8.617 x $10^{−5} eV \cdot K^{-1}$).
+                    \item $B_0$ is the trait value at the reference temperature, $T_{ref}$ 283.15 K (10 \degree C), and controls the vertical offset of the curve.
+                    \item $E$ is the activation energy (eV) which controls the trait rise of the TPC up to $T_{pk}$, or $T_{opt}$ (i.e. in the ``normal operating range" of the enzyme), and can be calculated as the gradient of $\frac{1}{kT}$ transformed temperature and ln(OriginalTraitValue), when the rise values only are isolated, via a linear regression. When insufficient data were available for this estimation, a default value of 0.66 eV was used, with a lower bound of 0.2 eV and upper bound of 1.2 eV \shortcite{dell2011systematic}.
+                    \item $E_h$ is the enzyme's high-temperature de-activation energy (eV) and controls enzyme behaviour at very high temperatures, i.e. the trait fall above $T_{pk}$. It can be calculated from the same transformation as $E$ when trait fall values (right of $T_{pk}$) are isolated. In this study, however, $E_h$ was given a starting value of 1.15 eV, min of 0.76, max of 6.6. This is consistent with \shortcite{dell2011systematic} obtaining mean $E_h \approx 2 \cdot E$, however the upperbound was relaxed to $10 \cdot E$ to not restrict the fitting algorithm.
+                    \item $T_h$ is the temperature (K) at which the enzyme is 50\% high-temperature deactivated. For the purposes of this study, $T_h$ was given a starting value of $T_{max}$, min of $T_{pk}$ and max of 500 K. This is because the enzyme can only begin to deactivate at temperatures above $T_{pk}$, thus $T_h$ cannot take a value smaller than this.
+                \end{itemize}
+            \subsubsection{Bri\'ere}
+                \begin{itemize}
+                    \item $T_0$ is the minimum feasible temperature for the trait, below which the trait value tends to 0. This was estimated using the lowest temperature reading.
+                    \item $T_m$ is the maximum feasible temperature for the trait, above which the trait value tends to 0. This was estimated using the greatest temperature reading.
+                    \item $B_0$ is a normalisation constant \cite{feller2008introduction}.
+                \end{itemize}
+
+            In the case where models could not converge, parameters were re-estimated using a gaussian fluctuation, sampling from a normal distribution with the default parameter value, $k_{def}$ (as above) set as the mean and a standard deviation of 1,  $k \sim \mathcal{N}(k_{def}, 1)$. However, due to the biological nature of certain parameters, e.g. de-/activation energies, positive bounds were applied. This process was repeated a further 9 times when continual failures occured, totalling 11 attempts for each unique curve.
+            Herein, ``fitting" a model translates to varying the parameter values of each model so as to minimise the residual sum of squares ($RSS$). This was achieved via a Non Linear Least Squares (Levenberg-Marquardt) algorithm using the \texttt{minimize()} module of the \texttt{lmfit} Python package \shortcite{MoreLevenberg1978,newville_matthew_2014_11813}. 
+
+        \subsection{Model Comparison \& Selection}
+            In order to gain an idea of goodness-of-fit of a particular model, a $R^2$ value was calculated $\left(1 - \frac{RSS}{TSS}\right)$. To compare models, the small sample unbiased Akaike Information Criterion ($AIC_c$) was calculated \cite{johnson2004model, wagenmakers2004aic}. $AIC$ is a measure of how well a model \textit{does not} fit the data, i.e. how much information is lost from the mechanism which generated the data by representing it with the chosen model. The mathematical rationale for using $AIC_c$ was the low sample sizes in the database. When small, the probability that first-order $AIC$ will select models which have more parameters increases, i.e. $AIC$ will \textit{over fit} \shortcite{mcquarrie1998regression, claeskens2008model, giraud2014introduction}. This is the case when $p > \frac{n}{40}$, where $p$ is the number of free parameters and $n$ is sample size. Given that SSH and CUB share the maxmimum number of free parameters in this study, 4, rearranging for $n$ shows that $AIC_c$ should be used when $n < 160$, a condition which is satisfied for every curve in this dataset. $AIC_c$ corrects for small sample sizes by introducing an extra penalty term for the number of parameters, and as such allows for a comparison of models with varying numbers of free parameters (equal number of free parameters means $AIC = AIC_c$). The formula is as follows \shortcite{burnham2002modelselection}:
+            \begin{equation}
+                AIC_c = -2ln[\mathcal{L}(\hat{\theta_p}|y)] + 2p\left(\frac{n}{n - p -1} \right) 
+            \end{equation}
+            Note: as n $\rightarrow \infty$ the extra penalty term converges to $0$.
+            
+            For each model fit a $\Delta AIC_c$ was calculated, defined as the difference between the model scoring the lowest $AIC_c$ and the model in question \shortcite{burnham2004multimodel}. When $\Delta AIC \leq 2$, such a model was considered to be best supported by the data. An Akaike weight $W_i(AICc)$ was also calculated for each model which gives the relative likelihood of a model given the data, interpreted as a probability having been normalised. If a model's Akaike weight approaches one, it is ``unambiguously" supported by the data \shortcite{johnson2004model}.
+            \begin{equation}
+                W_i(AICc) = \frac{e^{-\frac{1}{2}\Delta_i(AICc)}}{\sum_{k=1}^{K}e^{-\frac{1}{2}\Delta_k}}
+            \end{equation}
+            
+
+        \subsection{Languages}
+            \subsubsection{Python 3.5.2}
+                Python 3.5.2 is an interpreted programming language which has gained significant popularity in quantitative disciplines and data science, in part due to its extensive list of specialised, scientific packages. Owing to this, in addition to its superior handling speeds (versus R), Python was used for the data wrangling and NLLS model fitting steps of the workflow. Specifically, wrangling was carried out using the \texttt{Pandas} and \texttt{Numpy}   packages. Models were fitted using the \texttt{minimize()}  module of the \texttt{lmfit} package.
+            \subsubsection{R 3.2.3}
+                R 3.2.3 \shortcite{Rlanguage} is a statistical language heavily used in the Natural and Mathematical Sciences. It is markedly slower than Python at performing certain tasks, however due to its advanced and aesthetic layered plotting capabilities, TPCs and the three subject models were plotted in R, specifically using the \texttt{ggplot2} library, and statistical analyses were performed. Plots were saved as \texttt{pdf} vector graphics which are more compatible with \LaTeX.
+            \subsubsection{Bash 4.3.48}
+                Bash is a command-scripting language native to most UNIX-based systems. It allows users to navigate the OS and directory tree from the command line and most notably permits the automation of many tasks, including the execution of scripts written in different languages. This makes it an ideal language for stitching together a workflow such as the one built in this project. In this case it was used to automate the entire worflow, from Python and R scripts to the construction of this report with \LaTeX  and \textsc{Bib}\TeX. \newpage
+    \section{Results}
+    \begin{wrapfigure}{R}{0.5\textwidth}
+        \centering
+        \includegraphics[width=4.5in]{../Results/Figs/Model_Fits/MTD3251.pdf}
+        \caption{Example TPC (ID: MTD3251) obtained from Net Photosynthesis data. All 3 models fit the data closely and form a  characteristic TPC shape.}
+    \end{wrapfigure}
+    Post-wrangling, the dataset contained 1084 individual TPCs and a mean of 16.76 points (sd = 46.76) per curve which met the criteria set out. During fitting, the \texttt{minimize()} algorithm converged on parameter values for all curves for SSH and CUB, while for BRI it failed to converge on 185 curves, leaving 898 successes (See Table 1). Further, any models which did converge but resulted in a negative $R^2$ were also considered to have failed, since this implies that they fit the data worse than a null model, i.e. a horizontal line. There were 93, 55 and 0 such instances for SSH, BRI and CUB models, respectively. These results were omitted from calculations as some extreme negative values had a substantial skewing effect on the mean. Further, since $\Delta AIC_c$ values and Akaike weights involve scoring a particular model against all other models, in these instances, the entire row was removed in order for $AIC_c$ and Akaike weight to compare all 3 models. Otherwise, erroneous inferences of which models fit best against each other, based on $\Delta AIC_c$ or Akaike weights may be made (e.g. concluding SSH fit better than BRI when BRI was never included in the weight). After ommision, some 797 curves remained for comparison.
+    Since $R^2$ values typically favour models with more parameters, $AIC_c$ scores were used for comparison. The mean $AIC_c$ results (see Table 1), suggest that, on average, the data supported the CUB model more strongly, followed by SSH and lastly by BRI.
+    
+    \begin{table}[ht]
+        \caption{NLLS Model Fitting Results, CUB model scores highest on goodness-of-fit and penalised fit ($AIC_c$). Mean $R^2$ only calculated for positive $R^2$ values and mean $AIC_c$ ignored rows containing NA values.}
+        \centering
+        \begin{tabular}{rrrr}
+        \hline
+        Model & Successful Fits (\%) & Mean $R^2$ & Mean $AIC_c$ \\ 
+        \hline
+        SSH & 100.00 & 0.88 & -47.83 \\ 
+        BRI & 82.92 & 0.84 & -44.71 \\ 
+        CUB & 100.00 & 0.90 & -49.48 \\ 
+        \hline
+        \end{tabular}
+    \end{table}
+
+    \begin{table}[ht]
+        \caption{$\Delta$$AIC_c$ scores for the 3 model fits, showing that models generally seem to have either strong support or no support (bimodal) from the data. BRI scores highest on occurences of $\Delta_i \leq 2$, however CUB has the most counts $\Delta_i \leq 4$ and the least $\Delta_i > 10$, suggesting greater support overall and greater versatility as a model.}
+        \centering
+        \begin{tabular}{rrrrrrr}            
+        \hline
+        Model & $\Delta_i \leq 2$ & $2 < \Delta_i \leq 4$ & $4 < \Delta_i \leq 7$ & $7 < \Delta_i \leq 10$ & $\Delta_i > 10$ & Total \\ 
+        \hline
+        SSH & 276 &  59 &  83 &  98 & 281 & 797 \\ 
+        BRI & 354 &  50 &  82 &  50 & 261 & 797 \\ 
+        CUB & 350 & 105 &  88 &  74 & 180 & 797 \\ 
+        \hline
+        \end{tabular}
+    \end{table}
+
+        The $\Delta$$AIC_c$ results provide better insight into the distribution of support for each model. When $\Delta_i \leq 2$, there is strong support for the model, and if more than one model satisfy this condition, they cannot be distinguished in terms of which is better supported. Less support is shown when $4 < \Delta_i \leq 7$, and no support when $\Delta_i > 10$ \cite{burnham2004multimodel}. Intriguingly, from Table 2, one can observe that the BRI model scored the most $\Delta_i \leq 2$, followed very closely by CUB then SSH. However, in the next class it is clear that CUB dominates, suggesting that it occupies more of the ``supported" region of lower scores, with 455 $\Delta_i \leq 4$ vs 404 and 335 in BRI and SSH, respectively. This explains why CUB holds the lowest mean  $AIC_c$. 
+
+        Akaike weights $W_i(AIC_c)$ reveal similar information, whereby CUB holds a greater proportion of higher weights, and hence a higher probability that it is the superior model in terms of support. This can be seen in Table 1 and visualised more clearly in the Figure 2 violin plot. It is evident from end widths that CUB has the smallest proportion of low $W_i$ and greatest proportion of high $W_i$, an upper distribution similar to BRI. \newpage       
+        
+        \begin{figure}
+            \begin{center}      
+            \includegraphics[width=4in]{../Results/Figs/Stats/Akaike_Weights.pdf}
+            \caption{Violin plot of distribution of Akaike weights $W_i(AIC_c)$ across TPCs ($n = 797$). SSH and BRI occupy more near-zero $W_i(AIC_c)$ than CUB, and CUB occupies more weights near 1, followed closely by BRI.}
+            \end{center}
+        \end{figure}  
+
+
+    \section{Discussion}
+        From my results it is evident that the cubic model was generally better able to fit the TPC data, when all 3 models were able to fit, as supported by its mean $AIC_c$ score and Figure 2. This may initially seem unexpected, since the models it was compared against are supposedly better at capturing the nonlinear nature of TPCs, especially for the mechanistic SSH, which was built to explain this very data type. However, these results are based purely on the data which satisfied the criteria used during wrangling. What is not known at that point is whether all the data follow a, ``well-behaved", unimodal TPC, or something approximating one. Upon examination of the data, it is evident that a large proportion of the experiments are missing rate measurements above $T_{opt}$ or did not even capture $T_{opt}$. In these cases curves do not follow this shape, or, most notably, many of them only exhibit a trait rise or trait fall (either side of the curve), having not been measured either accurately enough or over a necessary temperature range to capture a TPC, or both. Given this information, it is less surprising that SSH was not the best fit overall, given the nature of its parameters and the values they can physically take. For example, the $T_h$ parameter, representing 50\% inactivation at high temperatures, cannot adopt a value less than $T_{opt}$, while $E$ and $E_h$ cannot be negative, since they are activation rates. Thus, these parameters are not free to vary infinitely during the minimization process, and when challenged with data which demand parameter values outside their range, the model breaks down (see Figure 3). This is supported by Figure 2, which shows a bimodal distriubtion of $W_i(AIC_c)$ for BRI and SSH, suggesting that if they could fit the data, they fit them well but if not, they fit very poorly. Since the SSH model is better at covering a broad temperature range, it seems intuitive that it would fall down on data with narrow temperature ranges. Further study would involve fitting a Boltzmann-Arrhenius model to these data and comparing results, since this is better at describing trait rises versus entire TPCs \shortcite{dell2011systematic}.
+        
+
+        \begin{figure}
+            \begin{center}      
+            \includegraphics[width=4.5in]{../Results/Figs/Model_Fits/MTD2106_bad_fit.pdf}
+            \caption{Extreme example of atypical TPC data where the SSH model fit poorly. The data are most likely erroneous, however the plot highlights the inability of SSH and ability of CUB/BRI to fit obscure data due to parameter ranges.}
+            \end{center}
+        \end{figure}  
+
+        Since the parameters in the CUB model are simply coefficients in a polynomial function, they can adopt any real number ($\beta_i \in \mathbb{R}$). In this way, perhaps CUB is better able to deal with obscure data, as is BRI, since its only parameter constraints are min and max temperature. However, with this logic one would expect BRI to have more successful fits than SSH. In fact, the contrary is true, which would seem to suggest that SSH is the more versatile model. As it stands, it seems that when BRI \textit{does} fit, it fits better than SSH but SSH can fit more TPCs than BRI. This may be because $AIC_c$ penalises the number of parameters, of which BRI has the fewest, so for a similar fit with fewer parameters, it scores lower (better). To clarify this, further study would involve stronger filtering of the data, perhaps with a minimum number of \texttt{n\_left} and \texttt{n\_right} points (see \texttt{../Results/model\_fit\_results.csv}). 
+
+        \subsection{Limitations}
+        The study had its share of limitations, chief among them being powerful comparison. This study compared model fits to TPC data from hundreds of species across 16 traits with different units, and while conclusions can be made regarding which model fits best, this insight can only be made at the broadest level, which is biological rate TPCs in general, assuming that the database is a good indicator of the generality of TPCs. It has been documented that the thermal dependence of ecological rates can vary with latitude, season and habitat and thus not controlling for these in my analysis will almost certainly ignore the power of a mechanistic model such as SSH for specific traits, habitats and scales \shortcite{yvon2012reconciling, pawar2016real}. Constraints on the total running time of the Python wrangling and model fitting script and R plotting script likely had consequences on the quality of the results. The fitting code originally included an attempt to improve $R^2$ scores for every model fit. This was achieved by continually introducing random gaussian fluctuations to the starting values and storing results if the $R^2$ score improved. Unfortunately, even with very minimal attempt count and duration, the resulting script took substantially longer to run. The same method was applied to fits that could not converge outright, although again, additional attempts were kept low to save on time. In the future, without this constraint, perhaps BRI and SSH models would fit the data better, since attempts and time may be limiting for these models.
+
+    \section{Conclusion}
+        Principally, the results of this study highlight the nobility of model fitting as a pursuit within the life sciences. Developing models which are accurate and flexible enough to describe the thermal dependence of biological traits will shed new light on the consequences of climate change for the biosphere. These results also show while mechanistic models may be more accurate in their bases, simple phenomenological models are still able to cope with a diverse set of data. Further study and prudent analysis of the data used here are certainly required in order to draw more meaningful conclusions regarding the ability of mechanistic versus phenomenological models to fit TPCs.
+    \bibliographystyle{apacite}
+    \bibliography{miniproject_biblio.bib}
+\end{document}

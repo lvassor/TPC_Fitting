@@ -1,0 +1,21 @@
+schoolfield model to arrhenius response will give you high 
+confidence in increasing part
+if data on right, can get whole fit with a schoolfield
+if you want to split response, you can get starting values (b0, m, El, E, Ed) so 3 Es. Three activation energy model fit with SS. 6 parameter SS model is the extreme case. In the case where you are fitting the whole model. 
+with 6 parameters, enzyme is undergoing a phase transition, because of physics of kinetics. tricky here because you need starting values for all 6, but you can bound them, because you know that some parameters are only on certain sides.
+Tref is temperature at which you are calculating B0, so can change Tref 25oC is too high, you end up choosing normalising temperature on right side of peak which is wrong. use 5oC (go for something between 0 and 10) you can interpolate what value is at 5oCm by fitting arrhenius to whatever data you have. so now you have b0 and E. 
+
+either for NLLS with arrhenius only or fit a linear with log. can get starting values by taking log, fitting linear and calculate slope w/ respect to 1/kT. use x10 values for EH vs E because rapid fall. can choose fixed starting and let NLLS do the job or choose parameter values from distriubtions and run 10,000 times. if getting pretty good fits can tweak algorithm that calculates El. 
+generate synthetic curve and understand it, then 
+conclusions - computational and biological. be explicit about methods you rationalise to do any of this. 
+use calculated E to inform distribution you take from for distriubtions
+
+plot curves on the data based on estimates you've made, don't just stare at them. plot your fitted curves. scripts shouldnt run longer than 5-10 mins. 
+Need to decide what to do with negative values - either drop or rescale everything, so that smallest value is zero. Can subtract everything from smallest value and still get zero
+doesnt matter if you elevate the whole curve, just interested in shape. 1 negative value, dropping it is fine. some of the rates are fluxes, can go from negative to positive. rescale whole curve and drop the zero value. don't do it for all, individual basis
+
+trying to get maximum info from data
+some of the curves are not complete - can blindly fit same model to all curves - shit fit. can do that.
+treating. originally, split data to two sides and fit arrhenius model to both, based on metabolic theory, both sides should have arrhenius. if maximum exists, don't split. can do model selection by fitting whole thermal performance curve to every model. how many bad fits are because of data or because of model.
+
+
